@@ -9,6 +9,8 @@ packages = [{include = "short_and_sweet"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 google-play-scraper = "^1.2.4"
+requests = "^2.31.0"
+beautifulsoup4 = "^4.12.2"
 
 
 [build-system]

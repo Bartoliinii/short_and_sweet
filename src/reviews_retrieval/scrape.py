@@ -1,0 +1,1 @@
+from google_play_scraper import reviews
