@@ -14,22 +14,24 @@ class ReviewsScraper:
         else:
             sort = gps.Sort.MOST_RELEVANT
 
-        self.app_reviews, _ = gps.reviews(link,
+        self._app_reviews, _ = gps.reviews(link,
                                        sort=sort,
                                        filter_score_with=stars,
-                                       count=1)
-
+                                       count=200)
         return Reviews(stars=stars,
-                       oldest_review_date=self.get_oldest_review_date(),
-                       reviews=self.get_reviews())
+                       oldest_review_date=self._get_oldest_review_date(),
+                       reviews=self._get_reviews(),
+                       thumbs_up_count=self._get_thumbs_up_count())
+# TODO create a for loop to scrape more than 200 reviews
+    def _get_reviews(self) -> List[str]:
+        return [rev['content'] for rev in self._app_reviews]
 
-    def get_reviews(self) -> List[str]:
-        return [rev['content'] for rev in self.app_reviews]
-
-    def get_review_dates(self) -> List[datetime]:
-        return [rev['at'] for rev in self.app_reviews]
-
-
-    def get_oldest_review_date(self) -> datetime:
-        return min(self.get_review_dates())
+    def _get_review_dates(self) -> List[datetime]:
+        return [rev['at'] for rev in self._app_reviews]
+    
+    def _get_thumbs_up_count(self) -> List[int]:
+        return [rev['thumbsUpCount'] for rev in self._app_reviews]
+    
+    def _get_oldest_review_date(self) -> datetime:
+        return min(self._get_review_dates())
 
