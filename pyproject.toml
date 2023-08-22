@@ -2,7 +2,7 @@
 name = "short-and-sweet"
 version = "0.1.0"
 description = ""
-authors = ["bpietrzak <bartoszekmmmm@gmail.com>"]
+authors = ["."]
 readme = "README.md"
 packages = [{include = "short_and_sweet"}]
 
@@ -11,6 +11,7 @@ python = "^3.11"
 google-play-scraper = "^1.2.4"
 requests = "^2.31.0"
 beautifulsoup4 = "^4.12.2"
+bertopic = "^0.15.0"
 
 
 [build-system]
