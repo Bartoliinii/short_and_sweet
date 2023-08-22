@@ -8,3 +8,4 @@ class Reviews:
     stars: int
     oldest_review_date: datetime
     reviews: List[str]
+    thumbs_up_count: List[int]
