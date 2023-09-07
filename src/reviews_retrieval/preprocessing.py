@@ -3,42 +3,41 @@ from typing import List, Callable
 import re
 
 
-class Preprocessor():
+class Operations():
     def __init__(self) -> None:
-        self.punctuation_signs = special_signs = ['.', ',', '!', '?', ':', ';',
-                                            '(', ')', '[', ']', '{', '}',
-                                            '"', "'", '``', "''", '`', '...',
-                                            '--']
-        self.stop_words = set(nltk.corpus.stopwords.words('english'))
+        self.punctuation_signs = ['.', ',', '!', '?', ':',
+                                  ';', '(', ')', '[', ']',
+                                  '{', '}', '...', '--']
+        self.sw = set(nltk.corpus.stopwords.words('english'))
         self.lemmatizer = nltk.stem.WordNetLemmatizer()
 
-    def flowercase(self, x: List[str]) -> List[str]:
+    def lowercase(self, x: List[str]) -> List[str]:
         return [sentence.lower() for sentence in x]
 
-    def fpunctuation(self, x: List[str],
-                    special_signs: List[str] = None) -> List[str]:
-        if special_signs:
-            chars = special_signs + self.punctuation_signs
-        else:
-            chars = self.punctuation_signs
-        pattern = r'|'.join(re.escape(char) for char in chars)
+    def punctuation(self, x: List[str]) -> List[str]:
+        pattern = r'|'.join(re.escape(char)
+                            for char in self.punctuation_signs)
         return [re.sub(pattern, '', sentence) for sentence in x]
 
-    def fnumbers(self, x: List[str]) -> List[str]:
+    def numbers(self, x: List[str]) -> List[str]:
         return [re.sub(r'\d+', '', sentence) for sentence in x]
 
-    def fstop_words(self, x: List[str]) -> List[str]:
+    def stop_words(self, x: List[str]) -> List[str]:
         return [' '.join([word for word in sentence.split()
-                          if word not in self.stop_words])
+                          if word not in self.sw])
                 for sentence in x]
 
-    def flemmatize(self, x: List[str]) -> List[str]:
+    def lemma(self, x: List[str]) -> List[str]:
         return [' '.join([self.lemmatizer.lemmatize(word)
                           for word in sentence.split()])
                 for sentence in x]
 
-    def fpreprocess(self, x: List[str],
-                   methods: List[Callable]) -> List[str]:
-        for i, method in enumerate(methods):
+
+class Pipeline():
+    def __init__(self, pipeline: List[Callable]) -> None:
+        self.pipeline = pipeline
+
+    def __call__(self, x: List[str]) -> List[str]:
+        for method in self.pipeline:
             x = method(x)
         return x
