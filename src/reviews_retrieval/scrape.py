@@ -1,37 +1,42 @@
-import google_play_scraper as gps
-from dataclasses import dataclass
+from google_play_scraper import reviews, Sort
 from typing import List
 from datetime import datetime
 
 from reviews import Reviews
 
 
-class ReviewsScraper:
-    def scrape_app_reviews(self, link: str, sort: str = 'newest',
-                           stars: int = 3) -> Reviews:
-        if sort == 'newest':
-            sort = gps.Sort.NEWEST
-        else:
-            sort = gps.Sort.MOST_RELEVANT
+def scrape_app_reviews(link: str, order: str = 'newest', stars: int = 3,
+                       count: int = 2000) -> Reviews:
 
-        self._app_reviews, _ = gps.reviews(link,
-                                       sort=sort,
-                                       filter_score_with=stars,
-                                       count=200)
-        return Reviews(stars=stars,
-                       oldest_review_date=self._get_oldest_review_date(),
-                       reviews=self._get_reviews(),
-                       thumbs_up_count=self._get_thumbs_up_count())
-# TODO create a for loop to scrape more than 200 reviews
-    def _get_reviews(self) -> List[str]:
-        return [rev['content'] for rev in self._app_reviews]
+    def get_reviews(reviews) -> List[str]:
+        return [rev['content'] for rev in reviews]
 
-    def _get_review_dates(self) -> List[datetime]:
-        return [rev['at'] for rev in self._app_reviews]
-    
-    def _get_thumbs_up_count(self) -> List[int]:
-        return [rev['thumbsUpCount'] for rev in self._app_reviews]
-    
-    def _get_oldest_review_date(self) -> datetime:
-        return min(self._get_review_dates())
+    def get_review_dates(reviews) -> List[datetime]:
+        return [rev['at'] for rev in reviews]
+
+    def get_thumbs_up_count(reviews) -> List[int]:
+        return [rev['thumbsUpCount'] for rev in reviews]
+
+    def get_oldest_review_date(reviews) -> datetime:
+        return min(get_review_dates(reviews), default='EMPTY')
+
+    results = []
+    sort = Sort.NEWEST if order == 'newest' else Sort.MOST_RELEVANT
+    if count > 200:
+        cnt, c_tkn = 200, None
+        for _ in range(count // 200):
+            result, c_tkn= reviews(link, lang='en', country='us', sort=sort,
+                                   count=cnt, filter_score_with=stars,
+                                   continuation_token=c_tkn)
+            results.extend(result)
+    else:
+        results = reviews(link, lang='en', country='us', sort=sort,
+                          count=count, filter_score_with=5)
+
+    return Reviews(stars=stars,
+                   oldest_review_date= get_oldest_review_date(results),
+                   reviews=get_reviews(results),
+                   thumbs_up_count=get_thumbs_up_count(results))
+
+
 
