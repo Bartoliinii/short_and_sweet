@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class AppScrapeRequest(BaseModel):
-    AppId: str
+    URL: str
     Order: str | None
     Stars: int | None
     Count: int | None

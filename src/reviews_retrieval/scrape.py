@@ -2,11 +2,11 @@ from google_play_scraper import reviews, Sort
 from typing import List
 from datetime import datetime
 
-from reviews import Reviews
+from src.reviews_retrieval.reviews import Reviews
 
 
-def scrape_app_reviews(link: str, order: str = 'newest', stars: int = 3,
-                       count: int = 2000) -> Reviews:
+def scrape_app_reviews(link: str, order: str, stars: int,
+                       count: int) -> Reviews:
 
     def get_reviews(reviews) -> List[str]:
         return [rev['content'] for rev in reviews]
@@ -30,13 +30,11 @@ def scrape_app_reviews(link: str, order: str = 'newest', stars: int = 3,
                                    continuation_token=c_tkn)
             results.extend(result)
     else:
-        results = reviews(link, lang='en', country='us', sort=sort,
-                          count=count, filter_score_with=5)
-
+        results, _ = reviews(link, lang='en', country='us', sort=sort,
+                             count=count, filter_score_with=5)
     return Reviews(stars=stars,
                    oldest_review_date= get_oldest_review_date(results),
                    reviews=get_reviews(results),
                    thumbs_up_count=get_thumbs_up_count(results))
 
-
-
+# TODO Error handling

@@ -1,13 +1,18 @@
 from fastapi import APIRouter
+import re
 
-from scrape import scrape_app_reviews
-from src.schemas import AppScrapeRequest
+from src.reviews_retrieval.scrape import scrape_app_reviews
+from src.reviews_retrieval.reviews import Reviews
 
-router = APIRouter('/scraper')
+scrape_router = APIRouter(prefix='/scrape')
 
-@router.post('/get_reviews')
-async def get_reviews(request: AppScrapeRequest):
-    return scrape_app_reviews(request.AppId,
-                              request.Order,
-                              request.Stars,
-                              request.Count)
+@scrape_router.get('/get_reviews/')
+async def get_reviews(url: str, order: str = 'newest',
+                      stars: int = 1, count: int = 2000) -> Reviews:
+    match = re.search(r'id=([^&]+)', url)
+    if match:
+        app_id = match.group(1)
+        return scrape_app_reviews(app_id, order, stars, count)
+    else:
+        raise ValueError('Invalid URL')
+
