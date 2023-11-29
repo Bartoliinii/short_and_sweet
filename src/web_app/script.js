@@ -1,5 +1,6 @@
 const urlPattern = /https:\/\/play.google.com\/store\/apps\/details\?id=([a-zA-Z0-9.]+)&hl=en_.*$/;
 const idPattern = /id=([a-zA-Z0-9.]+)&/;
+const apiUrl = 'http://0.0.0.0:7001/app_data/';
 
 function verifyUrl(url) {
     return urlPattern.test(url);
@@ -22,31 +23,51 @@ function animateInputField() {
     inputElement.style.transition = 'margin-top 0.5s ease'; // Adding transition for margin-top
 }
 
+function displayErrorMessage(message) {
+    // Create a div for the error message
+    var errorMessageElement = document.createElement('div');
+    errorMessageElement.textContent = message;
+    errorMessageElement.className = 'error-message';
+
+    // Append the error message div to the body
+    document.body.appendChild(errorMessageElement);
+
+    // Remove the error message after a certain duration (e.g., 5 seconds)
+    setTimeout(function () {
+        errorMessageElement.remove();
+    }, 5000);
+}
+
 function pasteUrl() {
     var urlInput = document.getElementById('urlInput').value;
-    var is_id = verifyUrl(urlInput);
-    console.log("Is google id: ", is_id);
-    if (is_id) {
-        var appId = extractId(urlInput);
+    if (verifyUrl(urlInput)) {
+        encodedAppId = encodeURIComponent(extractId(urlInput));
+        fetch(`${apiUrl}?app_id=${encodedAppId}`)
+            .then(async (response) => {
+            if (!response.ok) {
+                const errorData = await response.json();
 
-        console.log('Extracted ID:', appId);
-
-        // Make HTTP request to the specified endpoint with the extracted app ID
-        fetch(`http://0.0.0.0:7001/app_data/?app_id=${encodeURIComponent(appId)}`)
-            .then(response => response.json())
-            .then(data => {
-                // Process the data received from the endpoint
-                console.log('Response from endpoint:', data);
-
-                // Display app information and animate input field
-                displayAppInfo(data);
-                animateInputField();
+                switch (response.status) {
+                    case 403:
+                        displayErrorMessage(errorData.detail);
+                        break;
+                    case 404:
+                        displayErrorMessage('Not found, check the URL and endpoints');
+                        break;
+                    default:
+                        console.log(response);
+                        displayErrorMessage(errorData.detail);
+                }
+                console.error(`Error: ${errorData.detail}`);
+            } else {
+                const appData = await response.json();
+                displayAppInfo(appData);
+            }
             })
-            .catch(error => {
-                console.error('Error:', error);
+            .catch((error) => {
+            console.error('Request failed:', error);
             });
-    } else {
-        displayErrorMessage("URL must contain app id and come from the English version of the site");
+
     }
 }
 
@@ -71,4 +92,12 @@ function displayAppInfo(data) {
     appInfoElement.appendChild(iconElement);
     appInfoElement.appendChild(titleElement);
     appInfoElement.appendChild(reviewsElement);
+
+    // Move the input field to the top
+    document.querySelector('.inputField').classList.add('moveUp');
 }
+
+document.getElementById('urlInput').addEventListener('focus', function () {
+    // Move the input field back to the center when it's focused
+    document.querySelector('.inputField').classList.remove('moveUp');
+});

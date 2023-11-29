@@ -12,7 +12,13 @@ body {
 .inputField {
     text-align: center;
     position: relative;
-    transition: margin-top 0.5s ease; /* Adding transition for margin-top */
+    transition: top 0.5s ease; /* Adding transition for top */
+}
+
+.inputField.moveUp {
+    position: absolute;
+    top: 10px;
+    transition: top 0.5s ease; /* Adding transition for top */
 }
 
 .futuristic-input {
@@ -36,11 +42,14 @@ body {
 }
 
 .error-message {
-    position: absolute;
-    top: -40px; /* Adjust the distance from the input field */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     background-color: #e74c3c; /* Error message background color */
     color: #fff; /* Error message text color */
     padding: 10px;
-    border-radius: 10px;
+    text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other elements */
 }
