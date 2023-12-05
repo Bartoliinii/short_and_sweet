@@ -1,0 +1,7 @@
+{
+    "bertopic": "http://model:8000/inference/bertopic",
+    "distilbert": "http://model:8000/inference/distilbert",
+    "negative": -1,
+    "neutral": 0,
+    "positive": 1
+}
