@@ -1,18 +1,38 @@
 from fastapi import FastAPI
+from random import randint, choice
+from lorem import sentence, paragraph
+import numpy as np
 
-from schemas import ModelInferenceRequest, BERTopicInferenceResponse
-from __init__ import model
+from schemas import (InferenceRequest, BERTopicInferenceResponse,
+                     DistilBertInferenceResponse)
 
 
 app = FastAPI(prefix='/model')
 
-@app.post('/fit-transform', response_model=BERTopicInferenceResponse)
-async def fit_predict(request: ModelInferenceRequest) -> None:
-    document_clusters =  model.fit_transform(request.Reviews)[0]
+
+def get_indexes(reviews: list, key: int) -> list:
+    reviews = [i for i, x in enumerate(reviews) if x == key]
+    return reviews
+
+@app.post('/inference/bertopic', response_model=BERTopicInferenceResponse)
+async def bertopic(request: InferenceRequest):
+    topic_nb = randint(1, 11)
+    print(topic_nb)
+    topics = [sentence() for key in range(topic_nb)]
+    document_classification = np.random.randint(-1, topic_nb, size=len(request.reviews)).tolist()
+    representative_reviews = [choice(get_indexes(document_classification, i))
+                              for i in range(topic_nb)]
 
     response = BERTopicInferenceResponse(
-        Topics={key: [word[0] for word in val]
-                 for key, val in model.get_topics().items()},
-        DocumentClusters=document_clusters,
-        RepresentativeDocuments=model.get_representative_docs())
+        topics=topics,
+        classification=document_classification,
+        representative_reviews=representative_reviews
+        )
+    return response
+
+@app.post('/inference/distilbert', response_model=DistilBertInferenceResponse)
+async def distilbert(request: InferenceRequest):
+    response = DistilBertInferenceResponse(
+        classification=np.random.randint(-1,2,
+                                         size=len(request.reviews)).tolist())
     return response

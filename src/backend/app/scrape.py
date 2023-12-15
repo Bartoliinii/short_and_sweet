@@ -1,15 +1,13 @@
 from google_play_scraper import reviews, app
-from typing import List, Dict, Any
-from datetime import datetime
+from typing import List
 import re
-import time
 
-from app.reviews import Reviews, AppData, ReviewsData
-from app import config
+from schemas import AppData, ReviewsData
+from setup import BACKEND
 
-print('im here')
-url_pattern = re.compile(config['scraping']['url_pattern'])
-id_pattern = re.compile(config['scraping']['id_pattern'])
+
+url_pattern = re.compile(BACKEND['url_pattern'])
+id_pattern = re.compile(BACKEND['id_pattern'])
 
 def preprocess_reviews(r: str) -> str:
     r = re.sub(r'[^a-zA-Z0-9\s\.,;!?\"\']+', ' ', r)
@@ -22,32 +20,24 @@ def preprocess_reviews(r: str) -> str:
 def get_reviews(reviews) -> List[str]:
     return [preprocess_reviews(rev['content']) for rev in reviews]
 
-def get_review_dates(reviews) -> List[datetime]:
-    return [rev['at'] for rev in reviews]
-
 def get_thumbs_up_count(reviews) -> List[int]:
     return [rev['thumbsUpCount'] for rev in reviews]
 
-def get_oldest_review_date(reviews) -> datetime:
-    return min(get_review_dates(reviews), default='EMPTY')
+def scrape_app_reviews(app_id: str, stars: int,
+                       count: int = None ) -> ReviewsData:
+    results, _ = reviews(app_id, count=count, filter_score_with=stars)
 
-def scrape_app_reviews(link: str, stars: int, count: int = None ) -> ReviewsData:
-    results, _ = reviews(link, lang='en', country='us', count=count,
-                         filter_score_with=stars)
-
-    return ReviewsData(stars=stars,
-                       oldest_review_date=get_oldest_review_date(results),
-                       reviews=get_reviews(results),
+    return ReviewsData(reviews=get_reviews(results),
                        thumbs_up_count=get_thumbs_up_count(results),
-                       small_nb_of_reviews=len(results) if len(results) < count else None)
+                       small_nb_of_reviews=len(results) if len(results) < count else None,
+                       length=len(results))
 
 def scrape_app_data(app_id: str) -> AppData | None:
     try:
         app_data = app(app_id)
-        return AppData(app_id=app_id,
-                       title=app_data['title'],
-                       reviews=app_data['reviews'],
-                       icon=app_data['icon'])
+        return AppData(title=app_data['title'],
+                       icon=app_data['icon'],
+                       reviews=app_data['reviews'])
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return None

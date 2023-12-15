@@ -1,0 +1,4 @@
+{
+    "bertopic": "http://0.0.0.0:8080/inference/bertopic",
+    "distilbert": "http://0.0.0.0:8080/inference/distilbert"
+}

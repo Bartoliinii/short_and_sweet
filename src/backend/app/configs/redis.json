@@ -1,0 +1,15 @@
+{
+    "setup": {
+        "host": "0.0.0.0",
+        "port": 6379
+    },
+
+    "dependencies": [
+        "reviews",
+        "thumbs_up_count",
+        "representative_reviews",
+        "review_classification",
+        "sentiment_classification",
+        "topics"
+    ]
+}
