@@ -1,4 +1,3 @@
-import json
 from bertopic import BERTopic
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import CountVectorizer
@@ -20,5 +19,3 @@ model = BERTopic(
     vectorizer_model=vectorizer_model,
     hdbscan_model=hdbscan_model,
     nr_topics=10)
-
-config = json.load(open('config.json'))

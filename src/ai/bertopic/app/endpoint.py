@@ -6,8 +6,8 @@ from load_dependencies import model
 
 router = APIRouter()
 
-@router.post('/inference/bertopic', response_model=BERTopicInferenceResponse)
-async def bertopic(request: InferenceRequest):
+@router.post('/inference', response_model=BERTopicInferenceResponse)
+async def inference(request: InferenceRequest):
     try:
         document_classification = model.fit_transform(request.reviews)[0]
         topics = []
@@ -23,5 +23,4 @@ async def bertopic(request: InferenceRequest):
             representative_reviews=representative_reviews)
         return response
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))
