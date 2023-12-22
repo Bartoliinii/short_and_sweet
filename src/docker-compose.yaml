@@ -17,3 +17,5 @@ services:
     depends_on:
       - cache
     command: "python main.py"
+
+# hi
