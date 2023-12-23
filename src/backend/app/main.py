@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from setup import BACKEND
-from routers import router
+from endpoints import router
 
 
 app = FastAPI(prefix='/backend')
