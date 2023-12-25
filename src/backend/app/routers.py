@@ -57,24 +57,24 @@ async def request_inference_distilbert() -> DistilBertResponse:
         negative=classification_counts[ENDPOINTS['negative']])
 
 @router.get('/more_data/')
-async def more_data(topic: int) -> DetailedResponse:
-    logging.debug('more_data function called with topic: %s', topic)
+async def more_data(cluster: int) -> DetailedResponse:
+    logging.debug('more_data function called with topic: %s', cluster)
     if not rc.ready():
         raise HTTPException(status_code=404, detail=ERRORS['resultsNotReady'])
     reviews, thumbs_up_count, representative_reviews, review_classification, \
         sentiment_classification, topics = rc.get_more_data()
 
-    if topic >= len(topics):
+    if cluster >= len(topics):
         raise HTTPException(status_code=404, detail=ERRORS['invalidKey'])
 
-    representative_idx = int(representative_reviews[topic])
-    all_topic_reviews = get_topic_reviews(topic,
+    representative_idx = int(representative_reviews[cluster])
+    all_topic_reviews = get_topic_reviews(cluster,
                                           representative_idx,
                                           reviews,
                                           thumbs_up_count,
                                           sentiment_classification,
                                           review_classification)
-    response = DetailedResponse(cluster=topics[topic],
+    response = DetailedResponse(cluster=topics[cluster],
                                 reviews=all_topic_reviews)
     return response
 
