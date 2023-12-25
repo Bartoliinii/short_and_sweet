@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from random import randint, choice
-from lorem import sentence, paragraph
+from lorem import sentence
 import numpy as np
+import uvicorn
 
 from schemas import (InferenceRequest, BERTopicInferenceResponse,
                      DistilBertInferenceResponse)
@@ -35,3 +36,6 @@ async def distilbert(request: InferenceRequest):
         classification=np.random.randint(-1,2,
                                          size=len(request.reviews)).tolist())
     return response
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)

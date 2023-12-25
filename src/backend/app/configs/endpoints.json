@@ -1,6 +1,6 @@
 {
-    "bertopic": "http://0.0.0.0:8080/inference/bertopic",
-    "distilbert": "http://0.0.0.0:8080/inference/distilbert",
+    "bertopic": "http://model:8000/inference/bertopic",
+    "distilbert": "http://model:8000/inference/distilbert",
     "negative": -1,
     "neutral": 0,
     "positive": 1

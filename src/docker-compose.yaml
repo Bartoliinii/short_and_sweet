@@ -11,9 +11,16 @@ services:
     image: backend:latest
     ports:
       - 7001:7001
-      - 8080:8080
     volumes:
       - ./backend/app:/app
     depends_on:
       - cache
     command: "python main.py"
+  model:
+    build: model/
+    image: modelsas:latest
+    volumes:
+      - ./model/app/:/app
+    ports:
+      - 8000:8000
+    command: "python model_router.py"

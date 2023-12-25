@@ -3,6 +3,6 @@
     "port": 7001,
     "url_pattern": "^https://play\\.google\\.com/store/apps/details\\?id=[a-zA-Z0-9.]+&hl=en(&.+)*$",
     "id_pattern": "id=([a-zA-Z0-9.]+)&",
-    "min_reviews": 20,
+    "min_reviews": 200,
     "max_reviews": 3000
 }
