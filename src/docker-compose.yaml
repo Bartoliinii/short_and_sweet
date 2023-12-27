@@ -7,14 +7,16 @@ services:
       - 6379:6379
     command: redis-server --save "" --appendonly no
 
-  # sentiment_endpoint:
-  #   build: ai/sentiment_classifier/
-  #   image: topic_generation:latest
+  # bertopic:
+  #   build: ./ai/bertopic
+  #   image: bertopic:latest
   #   ports:
   #     - 8080:8080
+  #   environment:
+  #     - PORT=8080
   #   volumes:
-  #     - ./ai/sentiment_classifier/app:/app
-  #   command: "python main.py"
+  #     - ./ai/bertopic/app:/app
+  #   command: "uvicorn main:app --host 0.0.0.0 --port 8080 --workers 1"
 
   backend:
     build: backend/
@@ -26,11 +28,12 @@ services:
     depends_on:
       - cache
     command: "python main.py"
-  model:
-    build: model/
-    image: modelsas:latest
-    volumes:
-      - ./model/app/:/app
-    ports:
-      - 8000:8000
-    command: "python model_router.py"
+  
+  # model:
+  #   build: models/
+  #   image: models:latest
+  #   volumes:
+  #     - ./models/app/:/app
+  #   ports:
+  #     - 8000:8000
+  #   command: "python main.py"

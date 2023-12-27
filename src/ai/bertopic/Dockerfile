@@ -1,17 +1,16 @@
 FROM python:3.11-slim-bullseye
 
+ENV PYTHONUNBUFFERED True
+
 WORKDIR /app
 
 COPY requirements.txt .
 
 RUN apt-get update && \
-    apt-get -y install gcc
-
-RUN pip install --upgrade pip && \
+    apt-get -y install gcc && \
+    pip install --upgrade pip && \
     pip install -r requirements.txt --default-timeout=100
 
 COPY ./app .
 
-EXPOSE 8080
-
-CMD ["python", "main.py"]
+CMD uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
