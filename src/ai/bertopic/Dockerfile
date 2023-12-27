@@ -1,4 +1,4 @@
-FROM python:3.10.13-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
@@ -8,10 +8,10 @@ RUN apt-get update && \
     apt-get -y install gcc
 
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt --default-timeout=100
 
 COPY ./app .
 
-EXPOSE 7070
+EXPOSE 8080
 
-CMD ["uvicorn", "model_router:app", "--host", "0.0.0.0", "--port", "7070"]
+CMD ["python", "main.py"]

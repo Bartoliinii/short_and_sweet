@@ -9,6 +9,6 @@ app = FastAPI()
 app.include_router(router)
 
 if __name__ == '__main__':
-    uvicorn.run(app, host=config['host'],
-                port=config['port'])
+    uvicorn.run("main:app", host=config['host'],
+                port=config['port'], reload=True)
 
