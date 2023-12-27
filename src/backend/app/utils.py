@@ -11,8 +11,8 @@ from scrape import validate_url, extract_app_id, scrape_app_data, \
 
 async def fetch_inference_result(url: str, payload: dict) -> dict:
     async with AsyncClient() as client:
-        print(url)
-        response = await client.post(url, json=payload)
+        response = await client.post(url, json=payload,
+                                     timeout=BACKEND['timeout'])
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail=ERRORS['inferenceError'])
     return response.json()
