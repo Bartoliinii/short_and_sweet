@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-from load_dependencies import config
 from endpoint import router
 
 

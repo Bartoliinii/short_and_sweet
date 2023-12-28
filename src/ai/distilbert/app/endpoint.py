@@ -9,7 +9,7 @@ from load_dependencies import model, tokenizer
 
 router = APIRouter()
 
-@router.post('/inference/sentiment')
+@router.post('/inference')
 async def sentiment(request: InferenceRequest) -> ClassificationResponse:
     try:
         inputs = tokenizer(request.reviews, return_tensors="pt", padding=True,
