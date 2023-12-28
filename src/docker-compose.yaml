@@ -14,9 +14,14 @@ services:
   #     - 8080:8080
   #   environment:
   #     - PORT=8080
-  #   volumes:
-  #     - ./ai/bertopic/app:/app
-  #   command: "uvicorn main:app --host 0.0.0.0 --port 8080 --workers 1"
+
+  distilbert:
+    build: ./ai/distilbert
+    image: distilbert:latest
+    ports:
+      - 8081:8081
+    environment:
+      - PORT=8081
 
   backend:
     build: backend/

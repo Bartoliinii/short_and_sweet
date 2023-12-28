@@ -13,4 +13,4 @@ RUN apt-get update && \
 
 COPY ./app .
 
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 main:app
+CMD uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
