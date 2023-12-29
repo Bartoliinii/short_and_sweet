@@ -64,7 +64,7 @@ async def more_data(cluster: int) -> DetailedResponse:
     reviews, thumbs_up_count, representative_reviews, review_classification, \
         sentiment_classification, topics = rc.get_more_data()
 
-    if cluster >= len(topics):
+    if cluster < 0 or cluster >= len(representative_reviews):
         raise HTTPException(status_code=404, detail=ERRORS['invalidKey'])
 
     representative_idx = int(representative_reviews[cluster])

@@ -7,22 +7,6 @@ services:
       - 6379:6379
     command: redis-server --save "" --appendonly no
 
-  # bertopic:
-  #   build: ./ai/bertopic
-  #   image: bertopic:latest
-  #   ports:
-  #     - 8080:8080
-  #   environment:
-  #     - PORT=8080
-
-  distilbert:
-    build: ./ai/distilbert
-    image: distilbert:latest
-    ports:
-       - 8081:8081
-    environment:
-      - PORT=8081
-
   backend:
     build: backend/
     image: backend:latest
@@ -33,12 +17,28 @@ services:
     depends_on:
       - cache
     command: "python main.py"
-  
-  # model:
-  #   build: models/
-  #   image: models:latest
-  #   volumes:
-  #     - ./models/app/:/app
+
+  # bertopic:
+  #   build: ./ai/bertopic
+  #   image: bertopic:latest
   #   ports:
-  #     - 8000:8000
-  #   command: "python main.py"
+  #     - 8080:8080
+  #   environment:
+  #     - PORT=8080
+
+  # distilbert:
+  #   build: ./ai/distilbert
+  #   image: distilbert:latest
+  #   ports:
+  #      - 8081:8081
+  #   environment:
+  #     - PORT=8081
+
+  model:
+    build: models/
+    image: models:latest
+    volumes:
+      - ./models/app/:/app
+    ports:
+      - 8000:8000
+    command: "python main.py"
