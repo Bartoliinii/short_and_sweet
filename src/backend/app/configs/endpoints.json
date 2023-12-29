@@ -1,6 +1,6 @@
 {
-    "bertopic": "http://bertopic:8080/inference",
-    "distilbert": "http://distilbert:8081/inference",
+    "bertopic": "https://inference-le3y6kwwhq-lm.a.run.app/inference",
+    "distilbert": "https://inference-yzd55lc66a-lm.a.run.app/inference",
     "negative": -1,
     "neutral": 0,
     "positive": 1

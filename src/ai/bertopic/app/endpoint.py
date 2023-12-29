@@ -7,7 +7,7 @@ from load_dependencies import model
 router = APIRouter()
 
 @router.post('/inference', response_model=BERTopicInferenceResponse)
-async def bertopic(request: InferenceRequest):
+async def inference(request: InferenceRequest):
     try:
         document_classification = model.fit_transform(request.reviews)[0]
         topics = []
