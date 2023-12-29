@@ -1,6 +1,6 @@
 {
     "bertopic": "",
-    "distilbert": "",
+    "distilbert": "http://distilbert:8081/inference",
     "negative": -1,
     "neutral": 0,
     "positive": 1
