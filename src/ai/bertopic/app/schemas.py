@@ -7,7 +7,7 @@ class InferenceRequest(BaseModel):
     reviews: List[str] = Form(...)
 
 
-class BERTopicInferenceResponse(BaseModel):
+class TopicResponse(BaseModel):
     topics: Optional[List[str]]
     classification: Optional[List[int]]
     representative_reviews: Optional[List[int]]

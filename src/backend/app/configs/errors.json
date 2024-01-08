@@ -1,5 +1,5 @@
 {
-    "invalidUrl": "Invalid URL. Make sure URL is from english version of the site",
+    "invalidUrl": "Invalid URL. Make sure URL is from english version of the site\nTry copying URL from this site:\nhttps://play.google.com/store/games?hl=en",
     "insufficientReviews": "App did not recive sufficient number of reviews",
     "invalidCount": "Number of reviews exceeds the limit",
     "noCachedReviews": "No cached values under given key",

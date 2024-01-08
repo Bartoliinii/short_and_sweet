@@ -23,26 +23,14 @@ class ReviewsData(BaseModel):
 class AppData(BaseModel):
     title: str
     icon: Optional[str]
-    reviews: Optional[int]
 
 
-class BertopicInferenceResponse(BaseModel):
+class BertopicResponse(BaseModel):
     topics: Dict[int, str]
     counts: Dict[int, int]
 
 
-class DistilBertResponse(BaseModel):
+class DistillbertResponse(BaseModel):
     positive: int
     neutral: int
     negative: int
-
-
-class Review(BaseModel):
-    review: str
-    thumbs_up_count: int
-    sentiment: int
-
-
-class ClusterReviews(BaseModel):
-    cluster: str
-    reviews: List[Review]

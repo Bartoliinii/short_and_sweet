@@ -18,4 +18,7 @@ model = BERTopic(
     embedding_model=sentence_model,
     vectorizer_model=vectorizer_model,
     hdbscan_model=hdbscan_model,
-    nr_topics=10)
+    nr_topics=5)
+
+#TODO change nr_topics to smthn
+#TODO change min_df to smthn

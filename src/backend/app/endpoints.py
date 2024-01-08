@@ -1,21 +1,24 @@
 from fastapi import APIRouter, HTTPException
 
-from setup import ERRORS, BACKEND, ENDPOINTS, logging
+from setup import ERRORS, BACKEND, ENDPOINTS
 from cache_management import redis_client as rc
-from schemas import AppData, DistilBertResponse, BertopicInferenceResponse, \
+from schemas import AppData, DistillbertResponse, BertopicResponse, \
                     DetailedResponse
-
 from utils import check_count, validate_app_data, validate_app_reviews, \
-                    request_inference, get_topic_reviews
+                    request_inference, get_topic_reviews, check_stars
 
 router = APIRouter()
 
 @router.get('/app_data/')
 async def app_data(url: str, stars: int = None,
                    count: int = BACKEND['min_reviews']) -> AppData:
-    logging.debug('app_data function called with url: %s, stars: %s, count: %s', url, stars, count)
     rc.clear_all()
-    check_count(count)
+    if count is not None:
+        check_count(count)
+    if stars is not None:
+        check_stars(stars)
+        
+
     app_id, app_data = validate_app_data(url)
     app_reviews = validate_app_reviews(app_id, stars, count)
 
@@ -24,8 +27,7 @@ async def app_data(url: str, stars: int = None,
     return app_data
 
 @router.get('/request_inference/bertopic/')
-async def request_inference_bertopic() -> BertopicInferenceResponse:
-    logging.debug('request_inference_bertopic function called')
+async def request_inference_bertopic() -> BertopicResponse:
     response = await request_inference('bertopic')
 
     rc.cache('review_classification', response['classification'])
@@ -34,13 +36,12 @@ async def request_inference_bertopic() -> BertopicInferenceResponse:
 
     topic_counts = {i: response['classification'].count(i)
                     for i in range(len(response['topics'])) if i > -1}
-    return BertopicInferenceResponse(topics={
+    return BertopicResponse(topics={
         i: v for i, v in enumerate(response['topics'])},
                                      counts=topic_counts)
 
 @router.get('/request_inference/distilbert/')
-async def request_inference_distilbert() -> DistilBertResponse:
-    logging.debug('request_inference_distilbert function called')
+async def request_inference_distilbert() -> DistillbertResponse:
     response = await request_inference('distilbert')
 
     rc.cache('sentiment_classification', response['classification'])
@@ -51,14 +52,13 @@ async def request_inference_distilbert() -> DistilBertResponse:
                               ENDPOINTS['neutral'],
                               ENDPOINTS['negative']]
     }
-    return DistilBertResponse(
+    return DistillbertResponse(
         positive=classification_counts[ENDPOINTS['positive']],
         neutral=classification_counts[ENDPOINTS['neutral']],
         negative=classification_counts[ENDPOINTS['negative']])
 
 @router.get('/more_data/')
 async def more_data(cluster: int) -> DetailedResponse:
-    logging.debug('more_data function called with topic: %s', cluster)
     if not rc.ready():
         raise HTTPException(status_code=404, detail=ERRORS['resultsNotReady'])
     reviews, thumbs_up_count, representative_reviews, review_classification, \
@@ -80,5 +80,4 @@ async def more_data(cluster: int) -> DetailedResponse:
 
 @router.get('/healthcheck/')
 async def healthcheck() -> str:
-    logging.debug('healthcheck function called')
     return 'OK'
