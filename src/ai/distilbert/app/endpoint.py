@@ -25,4 +25,5 @@ async def inference(request: InferenceRequest) -> ClassificationResponse:
         return ClassificationResponse(
             classification=sentiments)
     except Exception as e:
+        print(e)
         return HTTPException(status_code=500, detail=str(e))
