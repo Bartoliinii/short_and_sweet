@@ -3,3 +3,5 @@ __pycache__
 poetry.lock
 src/reviews_retrieval/test.py
 *.log
+node_modules
+npm-debug.log
