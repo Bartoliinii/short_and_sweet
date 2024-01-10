@@ -18,6 +18,14 @@ services:
       - cache
     command: "uvicorn main:app --host 0.0.0.0 --port 7001"
 
+  # frontend:
+  #   build: frontend/
+  #   image: frontend:latest
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #    - backend
+
   # bertopic:
   #   build: ./ai/bertopic
   #   image: bertopic:latest
@@ -39,6 +47,7 @@ services:
     image: models:latest
     volumes:
       - ./models/app/:/app
+      - /app/node_modules
     ports:
       - 8000:8000
     command: "python main.py"
