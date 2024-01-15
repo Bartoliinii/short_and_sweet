@@ -18,13 +18,15 @@ services:
       - cache
     command: "uvicorn main:app --host 0.0.0.0 --port 7001"
 
-  # frontend:
-  #   build: frontend/
-  #   image: frontend:latest
-  #   ports:
-  #     - 3000:3000
-  #   depends_on:
-  #    - backend
+  frontend:
+    build: frontend/
+    image: frontend:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
 
   # bertopic:
   #   build: ./ai/bertopic

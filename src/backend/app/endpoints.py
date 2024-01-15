@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from setup import ERRORS, BACKEND, ENDPOINTS, logging
 from cache_management import redis_client as rc
-from schemas import AppData, DistilBertResponse, BertopicInferenceResponse, \
+from schemas import AppData, DistillbertResponse, BertopicResponse, \
                     DetailedResponse
 
 from utils import check_count, validate_app_data, validate_app_reviews, \
@@ -24,7 +24,7 @@ async def app_data(url: str, stars: int = None,
     return app_data
 
 @router.get('/request_inference/bertopic/')
-async def request_inference_bertopic() -> BertopicInferenceResponse:
+async def request_inference_bertopic() -> BertopicResponse:
     logging.debug('request_inference_bertopic function called')
     response = await request_inference('bertopic')
 
@@ -34,12 +34,12 @@ async def request_inference_bertopic() -> BertopicInferenceResponse:
 
     topic_counts = {i: response['classification'].count(i)
                     for i in range(len(response['topics'])) if i > -1}
-    return BertopicInferenceResponse(topics={
+    return BertopicResponse(topics={
         i: v for i, v in enumerate(response['topics'])},
                                      counts=topic_counts)
 
 @router.get('/request_inference/distilbert/')
-async def request_inference_distilbert() -> DistilBertResponse:
+async def request_inference_distilbert() -> DistillbertResponse:
     logging.debug('request_inference_distilbert function called')
     response = await request_inference('distilbert')
 
@@ -51,7 +51,7 @@ async def request_inference_distilbert() -> DistilBertResponse:
                               ENDPOINTS['neutral'],
                               ENDPOINTS['negative']]
     }
-    return DistilBertResponse(
+    return DistillbertResponse(
         positive=classification_counts[ENDPOINTS['positive']],
         neutral=classification_counts[ENDPOINTS['neutral']],
         negative=classification_counts[ENDPOINTS['negative']])

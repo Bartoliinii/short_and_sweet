@@ -1,13 +1,17 @@
-FROM node
+FROM node:18
 
 WORKDIR /app
 
-COPY app/package.json /app/package.json
+COPY app/package*.json ./
 
-RUN npm i
+RUN npm install
 
-COPY . .
+COPY app/.env ./
+
+COPY app/ ./
+
+RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "preview"]
