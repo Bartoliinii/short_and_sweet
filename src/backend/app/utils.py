@@ -51,6 +51,10 @@ def check_count(count: int) -> None:
         raise HTTPException(status_code=400,
             detail=f"{ERRORS['invalidCount']}. " +
             "Maximum allowed: {BACKEND['max_reviews']}")
+    
+def check_stars(stars: int) -> None:
+    if not stars in range(1, 6):
+        raise HTTPException(status_code=400, detail=ERRORS['invalidStars'])
 
 def validate_app_data(url: str) -> Tuple[str, AppData]:
     if not validate_url(url):
@@ -58,9 +62,6 @@ def validate_app_data(url: str) -> Tuple[str, AppData]:
 
     app_id = extract_app_id(url)
     app_data = scrape_app_data(app_id)
-    if app_data is None or app_data.reviews < BACKEND['min_reviews']:
-        raise HTTPException(status_code=400, detail=ERRORS['invalidUrl'])
-
     return app_id, app_data
 
 def validate_app_reviews(app_id: str, stars: int, count: int) -> ReviewsData:

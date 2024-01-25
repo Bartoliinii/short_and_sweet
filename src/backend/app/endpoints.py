@@ -4,9 +4,8 @@ from setup import ERRORS, BACKEND, ENDPOINTS, logging
 from cache_management import redis_client as rc
 from schemas import AppData, DistillbertResponse, BertopicResponse, \
                     DetailedResponse
-
 from utils import check_count, validate_app_data, validate_app_reviews, \
-                    request_inference, get_topic_reviews
+                    request_inference, get_topic_reviews, check_stars
 
 router = APIRouter()
 
@@ -15,7 +14,12 @@ async def app_data(url: str, stars: int = None,
                    count: int = BACKEND['min_reviews']) -> AppData:
     logging.debug('app_data function called with url: %s, stars: %s, count: %s', url, stars, count)
     rc.clear_all()
-    check_count(count)
+    if count is not None:
+        check_count(count)
+    if stars is not None:
+        check_stars(stars)
+        
+
     app_id, app_data = validate_app_data(url)
     app_reviews = validate_app_reviews(app_id, stars, count)
 

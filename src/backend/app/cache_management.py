@@ -6,21 +6,23 @@ from setup import REDIS, ERRORS
 
 
 class RedisClient:
-    def __init__(self, redis_cli: Redis) -> None:
-        self.redis = redis_cli
+    def __init__(self, redis_db: Redis) -> None:
+        self.redis = redis_db
 
     def clear_all(self):
         self.redis.flushdb()
 
     def cache(self, key: str, value: list | dict | str) -> None:
         self.redis.delete(key)
-        if isinstance(value, list):
-            self.redis.rpush(key, *value)
+        if value is None or not value:
+            pass
         elif isinstance(value, dict):
             for k, v in value.items():
                 self.redis.hset(key, k, v)
-        else:
+        elif isinstance(value, str):
             self.redis.set(key, value)
+        elif isinstance(value, list):
+            self.redis.rpush(key, *value)
 
     def get_cache(self, key: str) -> list | dict | str:
         if not self.redis.exists(key):
@@ -51,10 +53,10 @@ class RedisClient:
             return (self.get_cache(key) for key in REDIS['dependencies'])
 
 
-redisCli = Redis(
+redis_db = Redis(
     host=REDIS['setup']['host'],
     port=REDIS['setup']['port'],
-    charset="utf-8",
+    encoding="utf-8",
     decode_responses=True)
-redis_client = RedisClient(redisCli)
+redis_client = RedisClient(redis_db)
 redis_client.ping()

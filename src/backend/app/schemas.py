@@ -23,7 +23,6 @@ class ReviewsData(BaseModel):
 class AppData(BaseModel):
     title: str
     icon: Optional[str]
-    reviews: Optional[int]
 
 
 class BertopicResponse(BaseModel):

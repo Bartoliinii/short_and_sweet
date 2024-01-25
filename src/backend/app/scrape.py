@@ -35,9 +35,8 @@ def scrape_app_reviews(app_id: str, stars: int,
 def scrape_app_data(app_id: str) -> AppData | None:
     try:
         app_data = app(app_id)
-        return AppData(title=app_data['title'],
-                       icon=app_data['icon'],
-                       reviews=app_data['reviews'])
+        return AppData(title=app_data['title'] if app_data['title'] else "No title",
+                       icon=app_data['icon'] if app_data['icon'] else "",)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return None
