@@ -42,6 +42,7 @@ def get_topic_reviews(topic_key: int,
 
 async def request_inference(endpoint: str) -> dict:
     reviews = rc.get_cache('reviews')
+    print(ENDPOINTS[endpoint])
     response = await fetch_inference_result(ENDPOINTS[endpoint],
                                             {"reviews": reviews})
     return response

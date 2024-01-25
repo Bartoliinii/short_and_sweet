@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from setup import ERRORS, BACKEND, ENDPOINTS, logging
+from setup import ERRORS, BACKEND, ENDPOINTS
 from cache_management import redis_client as rc
 from schemas import AppData, DistillbertResponse, BertopicResponse, \
                     DetailedResponse
@@ -12,7 +12,6 @@ router = APIRouter()
 @router.get('/app_data/')
 async def app_data(url: str, stars: int = None,
                    count: int = BACKEND['min_reviews']) -> AppData:
-    logging.debug('app_data function called with url: %s, stars: %s, count: %s', url, stars, count)
     rc.clear_all()
     if count is not None:
         check_count(count)
@@ -29,7 +28,6 @@ async def app_data(url: str, stars: int = None,
 
 @router.get('/request_inference/bertopic/')
 async def request_inference_bertopic() -> BertopicResponse:
-    logging.debug('request_inference_bertopic function called')
     response = await request_inference('bertopic')
 
     rc.cache('review_classification', response['classification'])
@@ -44,7 +42,6 @@ async def request_inference_bertopic() -> BertopicResponse:
 
 @router.get('/request_inference/distilbert/')
 async def request_inference_distilbert() -> DistillbertResponse:
-    logging.debug('request_inference_distilbert function called')
     response = await request_inference('distilbert')
 
     rc.cache('sentiment_classification', response['classification'])
@@ -62,7 +59,6 @@ async def request_inference_distilbert() -> DistillbertResponse:
 
 @router.get('/more_data/')
 async def more_data(cluster: int) -> DetailedResponse:
-    logging.debug('more_data function called with topic: %s', cluster)
     if not rc.ready():
         raise HTTPException(status_code=404, detail=ERRORS['resultsNotReady'])
     reviews, thumbs_up_count, representative_reviews, review_classification, \
@@ -84,5 +80,4 @@ async def more_data(cluster: int) -> DetailedResponse:
 
 @router.get('/healthcheck/')
 async def healthcheck() -> str:
-    logging.debug('healthcheck function called')
     return 'OK'
