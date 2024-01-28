@@ -43,13 +43,3 @@ services:
        - 8081:8081
     environment:
       - PORT=8081
-
-  # model:
-  #   build: models/
-  #   image: models:latest
-  #   volumes:
-  #     - ./models/app/:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - 8000:8000
-  #   command: "python main.py"
