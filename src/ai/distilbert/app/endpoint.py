@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 import torch
 import torch.nn.functional as F
-from fastapi import HTTPException
 
 from schemas import InferenceRequest, ClassificationResponse
 from load_dependencies import model, tokenizer
@@ -25,5 +24,6 @@ async def inference(request: InferenceRequest) -> ClassificationResponse:
         return ClassificationResponse(
             classification=sentiments)
     except Exception as e:
-        print(e)
-        return HTTPException(status_code=500, detail=str(e))
+        return ClassificationResponse(
+            classification=[0] * len(request.reviews)
+        )
