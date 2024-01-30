@@ -85,10 +85,6 @@ Here are common errors you might encounter and how to resolve them.
   
         ![Alt text](images/memory_issue.png)
 
-- **Redeploy**: After adjusting the memory settings, redeploy the image to Cloud Run.
-
-  ![Redeploy Image](images/redeploy_image.png) *<-- Placeholder for a screenshot of the redeployment process.*
-
 ### 2. Time Out During Inference
 
 **Problem**: Experiencing a timeout during the inference phase of the project.
